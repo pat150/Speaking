@@ -467,19 +467,25 @@ Please do the following:
 
 Do NOT use bullet points or lists. Write in a natural, conversational tone as a teacher would speak.`;
 
+  const GROK_API_KEY = "xai-UB7IKkfnW7he83aqWKiphocobdDYES6KrL4FA8GIadYCx9yMlAhvf2PV2NyMeLFFoTAmeYe7FdrskziT";
+
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://api.x.ai/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GROK_API_KEY}`
+      },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "grok-3-mini",
         max_tokens: 1000,
         messages: [{ role: "user", content: prompt }]
       })
     });
 
     const data = await response.json();
-    const feedback = data.content[0].text;
+    const feedback = data.choices[0].message.content;
+
 
     // Determine if there were errors (simple heuristic)
     const hasErrors = /correct|should be|instead of|mistake|error|try saying|it should/i.test(feedback);
